@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import CommonHeader from "../components/CommonHeader"
-import CommonLeft from "../components/CommonLeft"
+import CommonHeader from "@/Layout/components/CommonHeader"
+import CommonLeft from "@/Layout/components/CommonLeft"
 /* import CommonTab from "../components/CommonTab"*/
 export default { 
   name: 'tabMain',

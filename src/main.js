@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import qs from 'qs'
 import utils from '@/utils/utils.js'
+import "./permission";
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios

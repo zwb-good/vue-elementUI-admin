@@ -3,11 +3,12 @@
  */
 
 /**
- * @param {string} path
+ * @description:手机号校验
+ * @param {string} str
  * @returns {Boolean}
  */
-export function isExternal(path) {
-  return /^(https?:|mailto:|tel:)/.test(path)
+export function validPhone(str) {
+  return /^1[3456789]\d{9}$/.test(str)
 }
 
 /**
@@ -60,8 +61,18 @@ export function validAlphabets(str) {
  * @returns {Boolean}
  */
 export function validEmail(email) {
-  const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const reg = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return reg.test(email)
+}
+
+/**
+ * @description:密码必须包含字母和数字，且在6~18位之间
+ * @param {string} password
+ * @returns {Boolean}
+ */
+export function validPassword(password) {
+  const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/
+  return reg.test(password)
 }
 
 /**

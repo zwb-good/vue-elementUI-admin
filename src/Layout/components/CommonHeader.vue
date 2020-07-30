@@ -31,7 +31,7 @@ export default {
   props: [""],
   data() {
     return {
-      userImg: require("../assets/images/userHeader.jpg"),
+      userImg: require("@/assets/images/userHeader.jpg"),
       username: ""
     };
   },

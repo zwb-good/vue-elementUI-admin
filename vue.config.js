@@ -1,13 +1,21 @@
+/*
+ * @Author: your name
+ * @Date: 2020-07-01 11:28:41
+ * @LastEditTime: 2020-07-18 16:40:00
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \my-project\vue.config.js
+ */ 
 module.exports = {
     devServer: {
+        port: 8081,
         proxy: {
             //配置跨域
-            '/api': {
+            '/devApi': {
                 target: "http://127.0.0.1:8080/",
-                ws: true,
                 changOrigin: true,
                 pathRewrite: {
-                    '^/api': ''
+                    '^/devApi': ''
                 }
             }
         }
