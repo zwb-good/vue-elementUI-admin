@@ -14,8 +14,12 @@
       <el-image :src="url" fit="cover" @click="changeverifyCode"></el-image>
     </el-form-item>
 
-    <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
-    <span v-if="msg" style="display: block;margin-bottom: 22px;color: #F56C6C;text-align: left;">{{login_message}}</span>
+    <el-form-item prop="code" class="verifyCode">
+      <!-- <el-checkbox v-model="checked" class="remember">记住密码</el-checkbox> -->
+      <span v-if="msg" style="float: right;color: #F56C6C;">{{login_message}}</span>
+    </el-form-item>
+
+    
 
     <el-form-item style="width:100%;">
       <el-button type="success" style="width:100%;" @click="submitForm('loginForm')" :loading="logining">登录</el-button>

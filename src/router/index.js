@@ -9,7 +9,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import login from '@/views/login/index.vue'
-/* import Layout from '@/views/CommonMain' */
+import index from '@/views/index.vue'
+import Layout from '@/views/CommonMain'
 /* import Layout from '@/Layout/components/CommonMain'
 import home from '@/views/user/index.vue'
 import role from '@/views/role/index.vue'
@@ -24,6 +25,21 @@ export const routes = [
     name: 'login',
     component: login,
     meta: {visitable:false},
+  },
+  { 
+    path: "/dashboard",
+    redirect: 'index',
+    component: Layout,
+    icon: "el-icon-user",
+    children: [
+      {
+        path: '/index',
+        name: 'index',
+        component: index,
+        title: "主页",
+        icon: "el-icon-user",
+      }
+    ]
   },
   /* {
     path: '/manage',

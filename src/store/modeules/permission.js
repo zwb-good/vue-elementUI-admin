@@ -41,8 +41,13 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, addRoutes) => {
-    state.addRoutes = addRoutes
-    state.routes = routes.concat(addRoutes)
+    routes.forEach(item => {
+      if(item.path === "/dashboard"){
+        item.children = item.children.concat(addRoutes);
+        state.addRoutes = item.children
+      }
+    });
+    state.routes = routes;
   },
   SET_OPENMENU: (state, openMenu) => {
     state.openMenu = openMenu

@@ -14,14 +14,7 @@ router.beforeEach(async(to, from, next) => {
         await store.dispatch('permission/checkOpenMenu', to.path)
         next()
       } else {
-        /* await store.dispatch('permission/generateRoutes', getToken().roleList)
-        const accessRoutes = store.getters.addRoutes;
-        router.options.routes = router.options.routes.concat(accessRoutes);
-        router.addRoutes(accessRoutes)
-        await store.dispatch('permission/checkOpenMenu', to.path)
-        next({ ...to, replace: true }) */
         const roles = await store.dispatch('user/getInfo')
-        console.log(roles)
         const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
         router.addRoutes(accessRoutes)
         await store.dispatch('permission/checkOpenMenu', to.path)

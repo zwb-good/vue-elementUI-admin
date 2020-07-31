@@ -23,18 +23,6 @@ export default {
     collapseMenu(state) {
       state.isCollapse = !state.isCollapse
     },
-    /* login(state){
-       let array = [];
-      data.forEach(item => {
-        array.push(item.name);
-      });
-      const addRouters = asyncRoutes[0].children.filter(item => {
-        if(array.includes(item.name)){
-          return item
-        }
-      }) 
-      window.sessionStorage.setItem("routers",this)
-    }, */
     logout(){
       window.sessionStorage.removeItem('token');
     },

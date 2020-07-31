@@ -10,7 +10,7 @@
     <div class="r-content">
       <em
         style="font-size: 16px;color: #409eff;margin-right:15px;vertical-align: middle;"
-      >{{username}}</em>
+      >{{name}}</em>
       <el-dropdown style="vertical-align: middle;">
         <span class="el-dropdown-link">
           <el-avatar size="medium" :src="userImg"></el-avatar>
@@ -37,7 +37,8 @@ export default {
   },
   computed: {
     ...mapState({
-      current: state => state.tab.currentMenu
+      current: state => state.tab.currentMenu,
+      name: state => state.user.name
     })
   },
   components: {},
