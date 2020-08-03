@@ -36,7 +36,7 @@ export const routes = [
         path: '/index',
         name: 'index',
         component: index,
-        title: "主页",
+        title: "首页",
         icon: "el-icon-user",
       }
     ]

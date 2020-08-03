@@ -9,6 +9,8 @@ import axios from 'axios'
 import qs from 'qs'
 import utils from '@/utils/utils.js'
 import "./permission";
+import Fragment from 'vue-fragment'
+Vue.use(Fragment.Plugin)
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios
