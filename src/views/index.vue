@@ -1,26 +1,30 @@
-<!--  -->
 <template>
-  <div>首页</div>
+  <div class="dashboard-container">
+    <div class="dashboard-text">欢迎您: {{ name }}</div>
+  </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
+import { mapGetters } from 'vuex'
 
-      }
-    },
-//生命周期 - 创建完成（访问当前this实例）
-  created() {
-
-  },
-//生命周期 - 挂载完成（访问DOM元素）
-  mounted() {
-
+export default {
+  name: 'Dashboard',
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   }
 }
 </script>
-<style scoped>
-/* @import url(); 引入css类 */
 
+<style lang="scss" scoped>
+.dashboard {
+  &-container {
+    margin: 30px;
+  }
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
+  }
+}
 </style>

@@ -141,7 +141,7 @@ export default {
       });
     },
     getValue(value) {
-      this.searchData.parentId = value;
+      this.searchData.parentId = value
     }
   }
 };

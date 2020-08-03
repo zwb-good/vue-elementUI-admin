@@ -76,7 +76,7 @@ export default {
   methods: {
     // 初始化值
     initHandle(){
-      if(this.valueId){
+      if(this.valueId != -1 && this.valueId != null){
         this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label]     // 初始化显示
         this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
         this.defaultExpandedKey = [this.valueId]      // 设置默认展开
@@ -105,10 +105,10 @@ export default {
     // 清除选中
     clearHandle(){
       this.valueTitle = ''
-      this.valueId = null
+      this.valueId = -1
       this.defaultExpandedKey = []
       this.clearSelected()
-      this.$emit('getValue',null)
+      this.$emit('getValue',-1)
     },
     /* 清空选中样式 */
     clearSelected(){
