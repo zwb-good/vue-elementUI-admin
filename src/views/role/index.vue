@@ -1,7 +1,6 @@
 <!-- 角色管理页面 -->
 <template>
   <div>
-
     <!-- 搜索表单 -->
     <common-search
       formName="searchForm"
@@ -20,8 +19,7 @@
     ></common-table>
 
     <!-- 模态框 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogShow">
-
+    <el-dialog :title="dialogTitle" :visible.sync="dialogShow" @close="handelDialogClose">
       <!-- 添加、修改角色表单 -->
       <template v-if="dialogContent == 'form'">
         <common-search
@@ -78,7 +76,7 @@ import {
   searchData,
   pageData,
   addData,
-  addForm
+  addForm,
 } from "./index.js";
 import {
   selectRole,
@@ -86,14 +84,14 @@ import {
   deleteRole,
   saveRole,
   selectRoleMenu,
-  updateRoleMenu
+  updateRoleMenu,
 } from "@/api/role.js";
 import { selectMenu } from "@/api/menu.js";
 export default {
   components: {
     CommonPage,
     CommonTable,
-    CommonSearch
+    CommonSearch,
   },
   data() {
     const validateExpirationDate = (rule, value, callback) => {
@@ -121,27 +119,39 @@ export default {
       /* 页面初始化角色表格操作按钮 */
       operates: {
         show: true,
-        list: []
-      }, 
+        list: [],
+      },
       /* 表单校验规则 */
       rules: {
-        code: [{ required: true, message: "角色编码不能为空", trigger: "blur" }],
-        name: [{ required: true, message: "角色名称不能为空", trigger: "blur" }],
-        effectiveDate: [{ required:	true, message: '请选择生效时间', trigger: 'blur'} ],
-        expirationDate: [{ required: true, trigger: "blur", validator: validateExpirationDate} ],
+        code: [
+          { required: true, message: "角色编码不能为空", trigger: "blur" },
+        ],
+        name: [
+          { required: true, message: "角色名称不能为空", trigger: "blur" },
+        ],
+        effectiveDate: [
+          { required: true, message: "请选择生效时间", trigger: "blur" },
+        ],
+        expirationDate: [
+          {
+            required: true,
+            trigger: "blur",
+            validator: validateExpirationDate,
+          },
+        ],
       },
       /* 角色表格选中行 */
       checkRows: [],
       /* 模态框打开、关闭 */
-      dialogShow: false, 
+      dialogShow: false,
       /* 模态框标题 */
       dialogTitle: "",
       /* 角色表格数据 */
-      tableData: [], 
+      tableData: [],
       /* 修改角色权限的树形菜单数据 */
-      menuTreeData: [], 
+      menuTreeData: [],
       /* 被选中菜单数据 */
-      checkData: [], 
+      checkData: [],
       /* 要展开的菜单数据 */
       expandData: [], //展开的菜单数组
       /* 模态框打开显示组件：“form”添加、修改表单；“table”角色权限组件 */
@@ -150,14 +160,15 @@ export default {
         //树形菜单属性
         children: "children",
         label: "title",
-        id: "id"
-      }
+        id: "id",
+      },
     };
   },
   //生命周期 - 挂载完成（访问DOM元素）
   mounted() {
     this.handleButtonShow();
     this.getTableData(); //获取表格数据
+    this.getMenuTree();
   },
   methods: {
     /* ----------------------------- 页面初始化函数 ----------------------------------------- */
@@ -173,11 +184,10 @@ export default {
       data.page = this.pageData.currentPage;
       data.rows = this.pageData.pagesize;
       let _this = this;
-      selectRole(data)
-      .then(function(res) {
-        _this.tableData = res.data.rows;
-        _this.pageData.total = res.data.total;
-      })
+      selectRole(data).then(function (res) {
+        _this.tableData = res.data;
+        _this.pageData.total = res.total;
+      });
     },
 
     /**
@@ -186,11 +196,11 @@ export default {
      */
     getMenuTree() {
       let _this = this;
-      selectMenu({ isTree: true }).then(function(res) {
-        _this.expandData = res.data.rows.map(item => {
+      selectMenu({ isTree: true }).then(function (res) {
+        _this.expandData = res.data.map((item) => {
           return item.id;
         });
-        _this.menuTreeData = res.data.rows; // 树形菜单数据
+        _this.menuTreeData = res.data; // 树形菜单数据
       });
     },
 
@@ -223,15 +233,16 @@ export default {
      * @description:设置角色权限操作打开模态框
      */
     handleSetRoleMenu(index, row) {
-      this.getMenuTree();
       this.addData.name = row.name;
       this.addData.id = row.id;
       let _this = this;
-      selectRoleMenu({ roleId: row.id }).then(res => {
-        _this.checkData = res.data.rows.map(item => {
+      selectRoleMenu({ roleId: row.id }).then((res) => {
+        _this.checkData = res.data.map((item) => {
           let node = _this.$refs.menuTree.getNode(item.menuId);
           if (node.isLeaf) {
-            _this.$refs.menuTree.setChecked(node, true);
+            _this.$nextTick(() => {
+              _this.$refs.menuTree.setChecked(node, true);
+            });
           }
           return item.menuId;
         });
@@ -241,12 +252,16 @@ export default {
       this.dialogShow = true;
     },
 
+    handelDialogClose() {
+      this.$refs.menuTree.setCheckedKeys([]);
+    },
+
     /**
      * @description:模态框保存操作
      */
     addFormSubmit(formName) {
       if (this.dialogContent === "form") {
-        this.$refs[formName].$refs.addForm.validate(valid => {
+        this.$refs[formName].$refs.addForm.validate((valid) => {
           if (valid) {
             if (this.addData.id !== null && this.addData.id !== "") {
               this.updateRoleSave();
@@ -268,8 +283,8 @@ export default {
      */
     updateRoleSave() {
       let _this = this;
-      updateRole(_this.addData).then(function(res) {
-        _this.utils.message(_this, res.data.msg, 3000);
+      updateRole(_this.addData).then(function (res) {
+        _this.utils.message(_this, res.msg, 3000);
         _this.getTableData(_this.searchData);
         _this.dialogShow = false;
       });
@@ -280,8 +295,8 @@ export default {
      */
     addRoleSave() {
       let _this = this;
-      saveRole(_this.addData).then(function(res) {
-        _this.utils.message(_this, res.data.msg, 3000);
+      saveRole(_this.addData).then(function (res) {
+        _this.utils.message(_this, res.msg, 3000);
         _this.getTableData(_this.searchData);
         _this.dialogShow = false;
       });
@@ -292,9 +307,13 @@ export default {
      */
     updateRoleMenuSave() {
       let roleId = this.addData.id;
-      let newMenuIds = this.$refs.menuTree.getHalfCheckedKeys().concat(this.$refs.menuTree.getCheckedKeys());
-      let addMenuIds = this.utils.addArry(this.checkData,newMenuIds).join(",");
-      let deleteMenuIds = this.utils.deleteArry(this.checkData,newMenuIds).join(",");
+      let newMenuIds = this.$refs.menuTree
+        .getHalfCheckedKeys()
+        .concat(this.$refs.menuTree.getCheckedKeys());
+      let addMenuIds = this.utils.addArry(this.checkData, newMenuIds).join(",");
+      let deleteMenuIds = this.utils
+        .deleteArry(this.checkData, newMenuIds)
+        .join(",");
       if (addMenuIds === "" && deleteMenuIds === "") {
         return;
       }
@@ -302,9 +321,9 @@ export default {
       updateRoleMenu({
         roleId: roleId,
         addMenuIds: addMenuIds,
-        deleteMenuIds: deleteMenuIds
-      }).then(res => {
-        _this.utils.message(_this, res.data.msg, 3000);
+        deleteMenuIds: deleteMenuIds,
+      }).then((res) => {
+        _this.utils.message(_this, res.msg, 3000);
         _this.getTableData(_this.searchData);
         _this.dialogShow = false;
       });
@@ -326,28 +345,24 @@ export default {
       this.$confirm("确认要删除吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           deleteRole({
             ids: _this.checkRows
-              .map(item => {
+              .map((item) => {
                 return item.id;
               })
-              .join(",")
-          }).then(function(res) {
-            if (res.data.success) {
-              _this.utils.message(_this, "删除成功", 3000);
-              _this.getTableData(_this.searchData);
-            } else {
-              _this.utils.message(_this, "删除失败", 3000);
-            }
+              .join(","),
+          }).then(function (res) {
+            _this.utils.message(_this, res.msg, 3000);
+            _this.getTableData(_this.searchData);
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
@@ -455,8 +470,6 @@ export default {
       this.operates.list = tableButton;
     },
   },
-
-
 };
 </script>
 <style scoped>

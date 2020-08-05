@@ -128,3 +128,10 @@ export function updateUserRole(data) {
   })
 }
 
+export function logout(data) {
+  return service.request({
+    url: '/user/logout',
+    method: 'get',
+    params:data
+  })
+}

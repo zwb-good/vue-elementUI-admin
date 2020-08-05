@@ -117,7 +117,7 @@ import {
   updateUserRole,
 } from "@/api/user.js";
 import { selectRole } from "@/api/role.js";
-import { validEmail, validPassword,validPhone } from "@/utils/validate";
+import { validEmail, validPassword, validPhone } from "@/utils/validate";
 import {
   tableHeader_user,
   searchForm,
@@ -207,14 +207,18 @@ export default {
       rules: {
         username: [
           { required: true, message: "用户名不能为空", trigger: "blur" },
-          { min: 2,max:6, message: "请输入2~6位用户名", trigger: "blur" },
+          { min: 2, max: 6, message: "请输入2~6位用户名", trigger: "blur" },
         ],
         name: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
-          { min: 2,max:10, message: "请输入2~10位姓名", trigger: "blur" },
+          { min: 2, max: 10, message: "请输入2~10位姓名", trigger: "blur" },
         ],
-        password: [{ required: true, trigger: "blur", validator: validatePassword }],
-        rePassword: [{ required: true, trigger: "blur", validator: validateRePassword }],
+        password: [
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
+        rePassword: [
+          { required: true, trigger: "blur", validator: validateRePassword },
+        ],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         phone: [{ required: true, trigger: "blur", validator: validatePhone }],
         email: [{ required: true, trigger: "blur", validator: validateEmail }],
@@ -260,7 +264,7 @@ export default {
     getALLRole() {
       let _this = this;
       selectRole({ haveEffective: true }).then(function (res) {
-        _this.tableData_role = res.data.rows;
+        _this.tableData_role = res.data;
       });
     },
 
@@ -284,12 +288,9 @@ export default {
       let _this = this;
       getUserList(data)
         .then(function (res) {
-          _this.tableData = res.data.rows;
-          _this.pageData.total = res.data.total;
+          _this.tableData = res.data;
+          _this.pageData.total = res.total;
         })
-        .catch(function (error) {
-          _this.utils.message(_this, error, 3000);
-        });
     },
 
     /**
@@ -312,7 +313,7 @@ export default {
         .then(() => {
           updateUser({ id: row.id, state: row.state == 1 ? 0 : 1 }).then(
             (res) => {
-              if (res.data.success) {
+              if (res.success) {
                 _this.getUser(_this.searchData);
               }
             }
@@ -348,12 +349,8 @@ export default {
               })
               .join(","),
           }).then(function (res) {
-            if (res.data.success) {
-              _this.utils.message(_this, "删除成功", 3000);
+              _this.utils.message(_this, res.msg, 3000);
               _this.getUser(_this.searchData);
-            } else {
-              _this.utils.message(_this, "删除失败", 3000);
-            }
           });
         })
         .catch(() => {
@@ -423,15 +420,15 @@ export default {
       let allRoles = [];
       await selectRole({ haveEffective: true }).then(function (res) {
         //_this.tableData_role = res.data.rows;
-        allRoles = res.data.rows;
+        allRoles = res.data;
       });
 
       this.addData.username = row.username;
       this.addData.id = row.id;
       let _this = this;
       selectRoleByUserId({ userId: row.id }).then((res) => {
-        _this.oldRoleRows = res.data.rows;
-        let roleIds = res.data.rows.map((item) => {
+        _this.oldRoleRows = res.data;
+        let roleIds = res.data.map((item) => {
           return item.roleId;
         });
 
@@ -440,13 +437,15 @@ export default {
           item.seen_expiration = false;
           _this.tableData_role.push(item);
           if (roleIds.includes(item.id)) {
-            res.data.rows.forEach((row) => {
+            res.data.forEach((row) => {
               if (row.roleId === item.id) {
                 item.effectiveDate = row.effectiveDate;
                 item.expirationDate = row.expirationDate;
               }
             });
-            this.$refs.roleTable.toggleRowSelection(item, true);
+            this.$nextTick(() => {
+              this.$refs.roleTable.toggleRowSelection(item, true);
+            });
           } else {
             item.effectiveDate = undefined;
             item.expirationDate = undefined;
@@ -488,13 +487,9 @@ export default {
     updateUserSave() {
       let _this = this;
       updateUser(_this.addData).then(function (res) {
-        if(res.data.success){
-          _this.utils.message(_this, res.data.msg, 3000);
-          _this.getUser(_this.searchData);
-          _this.userDialog = false;
-        }else{
-          _this.utils.message(_this, res.data.msg, 3000);
-        }
+        _this.utils.message(_this, res.msg, 3000);
+        _this.getUser(_this.searchData);
+        _this.userDialog = false;
       });
     },
 
@@ -504,13 +499,9 @@ export default {
     addUserSave() {
       let _this = this;
       saveUser(_this.addData).then(function (res) {
-        if (res.data.success) {
-          _this.utils.message(_this, res.data.msg, 3000);
-          _this.getUser(_this.searchData);
-          _this.userDialog = false;
-        } else {
-          _this.utils.message(_this, res.data.msg, 3000);
-        }
+        _this.utils.message(_this, res.msg, 3000);
+        _this.getUser(_this.searchData);
+        _this.userDialog = false;
       });
     },
 
@@ -556,13 +547,15 @@ export default {
         return;
       }
       let _this = this;
-      updateUserRole(JSON.stringify({
-        userId: userId,
-        addRoleRows: addRoleRows,
-        deleteRoleIds: deleteRoleIds.join(","),
-        updateRoleRows: updateRoleRows,
-      })).then((res) => {
-        _this.utils.message(_this, res.data.msg, 3000);
+      updateUserRole(
+        JSON.stringify({
+          userId: userId,
+          addRoleRows: addRoleRows,
+          deleteRoleIds: deleteRoleIds.join(","),
+          updateRoleRows: updateRoleRows,
+        })
+      ).then((res) => {
+        _this.utils.message(_this, res.msg, 3000);
         _this.getUser(_this.searchData);
         _this.userDialog = false;
       });

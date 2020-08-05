@@ -20,7 +20,7 @@
         </el-form-item>
         <!-- 记住我 -->
         <el-form-item>
-          <el-checkbox label="记住我" class="rememberMe"></el-checkbox>
+          <el-checkbox label="记住我" class="rememberMe" v-model="loginForm.rememberMe"></el-checkbox>
           <span v-if="msg" style="float: right;color: #F56C6C;">{{login_message}}</span>
         </el-form-item>
         <!-- 登录按钮 -->
@@ -61,6 +61,7 @@ export default {
         username: "",
         password: "",
         code: "",
+        rememberMe: false
       },
       login_message: "",
       url: "/devApi/user/captcha", //获取后台验证码图片
@@ -87,6 +88,7 @@ export default {
 
     submitForm() {
       this.$refs.loginForm.validate((valid) => {
+        this.$store.commit("user/SET_REMEBERME",this.loginForm.rememberMe)
         let _this = this;
         if (valid) {
           this.logining = true;
@@ -104,9 +106,6 @@ export default {
                 _this.logining = false;
               }
             })
-            .catch(() => {
-              this.loading = false;
-            });
         } else {
           return false;
         }

@@ -8,9 +8,7 @@
       </el-breadcrumb>
     </div>
     <div class="r-content">
-      <em
-        style="font-size: 16px;color: #409eff;margin-right:15px;vertical-align: middle;"
-      >{{name}}</em>
+      <em style="font-size: 16px;color: #409eff;margin-right:15px;vertical-align: middle;">{{name}}</em>
       <el-dropdown style="vertical-align: middle;">
         <span class="el-dropdown-link">
           <el-avatar size="medium" :src="userImg"></el-avatar>
@@ -32,23 +30,17 @@ export default {
   data() {
     return {
       userImg: require("@/assets/images/userHeader.jpg"),
-      username: ""
+      username: "",
     };
   },
   computed: {
     ...mapState({
-      current: state => state.tab.currentMenu,
-      name: state => state.user.name
-    })
+      current: (state) => state.tab.currentMenu,
+      name: (state) => state.user.name,
+    }),
   },
   components: {},
-  mounted: function() {
-    if (window.sessionStorage.getItem("token") !== undefined) {
-      let data = this.$qs.parse(window.sessionStorage.getItem("token"));
-      this.username = data.name;
-    } else {
-      this.$router.push({ name: "login" });
-    }
+  mounted: function () {
   },
   methods: {
     // 点击后收缩
@@ -60,20 +52,23 @@ export default {
       this.$confirm("确认要退出吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          this.$store.commit("logout");
-          this.$router.push({ name: "login" });
+          this.$store.dispatch("user/logout").then(() => {
+            this.$store.commit("permission/SET_ADDROUTES",[])
+            this.$router.push({ path: "/login" });
+            location.reload();
+          });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消退出"
+            message: "已取消退出",
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

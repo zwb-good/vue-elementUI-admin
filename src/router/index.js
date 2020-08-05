@@ -11,13 +11,14 @@ import VueRouter from 'vue-router'
 import login from '@/views/login/index.vue'
 import index from '@/views/index.vue'
 import Layout from '@/views/CommonMain'
-/* import Layout from '@/Layout/components/CommonMain'
-import home from '@/views/user/index.vue'
-import role from '@/views/role/index.vue'
-import menu from '@/views/menu/index.vue'
-import student from '@/views/Student.vue' */
 
 Vue.use(VueRouter)
+
+//解决重复点击路由报错
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 
 export const routes = [
   {
@@ -41,75 +42,20 @@ export const routes = [
       }
     ]
   },
-  /* {
-    path: '/manage',
-    component: Layout,
-    meta: {visitable:true,title:"首页",icon:"el-icon-menu"},
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        component: home,
-        meta: {visitable:true,title:"用户管理",icon:"el-icon-user"},
-      },
-      {
-        path: '/role',
-        name: 'role',
-        component: role,
-        meta: {visitable:true,title:"角色管理",icon:"el-icon-s-custom"},
-      },
-      {
-        path: '/menu',
-        name: 'menu',
-        component: menu,
-        meta: {visitable:true,title:"菜单管理",icon:"el-icon-folder-add"},
-      },
-    ]
-  },
-  {
-    path: '/studentManage',
-    component: Layout,
-    meta: {visitable:true,title:"学生页面",icon:"el-icon-user"},
-    children:[{
-      path: '/student',
-      name: 'student',
-      component: student,
-      meta: {visitable:true,title:"学生主页",icon:"el-icon-user"},
-    }]
-  } */
 ]
 
-/* export const asyncRoutes = [
-  {
-    path: '/main',
-    component: main,
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        component: home
-      },
-      {
-        path: '/role',
-        name: 'role',
-        component: role
-      },
-      {
-        path: '/menu',
-        name: 'menu',
-        component: menu
-      },
-      {
-        path: '/student',
-        name: 'student',
-        component: student
-      }
-    ]
-  }
-] */
-
-const router = new VueRouter({
-  routes,
+const createRouter = () => new VueRouter({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: routes
 })
+
+const router = createRouter()
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 export default router

@@ -175,12 +175,8 @@ export default {
       data.rows = this.pageData.pagesize;
       let _this = this;
       selectMenu(data).then(function (res) {
-        if (res.data.success) {
-          _this.tableData = res.data.rows;
-          _this.pageData.total = res.data.total;
-        } else {
-          _this.utils.message(_this, "查询失败", 3000);
-        }
+        _this.tableData = res.data;
+        _this.pageData.total = res.total;
       });
     },
 
@@ -196,7 +192,7 @@ export default {
       selectMenu(data).then(function (res) {
         _this.addForm.forEach(item => {
           if(item.type === "selectTree"){
-            item.options = res.data.rows;
+            item.options = res.data;
           }
         })
       });
@@ -248,7 +244,7 @@ export default {
     updateMenuSave() {
       let _this = this;
       updateMenu(_this.addData).then(function (res) {
-        _this.utils.message(_this, res.data.msg, 3000);
+        _this.utils.message(_this, res.msg, 3000);
         _this.getTableData(_this.searchData);
         _this.dialogShow = false;
       });
@@ -260,7 +256,7 @@ export default {
     addMenuSave() {
       let _this = this;
       saveMenu(_this.addData).then(function (res) {
-        _this.utils.message(_this, res.data.msg, 3000);
+        _this.utils.message(_this, res.msg, 3000);
         _this.getTableData(_this.searchData);
         _this.dialogShow = false;
       });
@@ -288,12 +284,8 @@ export default {
               })
               .join(","),
           }).then(function (res) {
-            if (res.data.success) {
-              _this.utils.message(_this, "删除成功", 3000);
-              _this.getTableData(_this.searchData);
-            } else {
-              _this.utils.message(_this, "删除失败", 3000);
-            }
+            _this.utils.message(_this, res.msg, 3000);
+            _this.getTableData(_this.searchData);
           });
         })
         .catch(() => {

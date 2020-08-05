@@ -85,14 +85,6 @@ export const searchForm = [
 ]
 
 let sex = [{value:"男",label:"男"},{value:"女",label:"女"}]
-export const searchHandle = [
-  {label:'查询',show:true,type:'primary',method: () => {
-        this.handleSearchFormSubmit()
-      }},
-  {label:'添加',show:true,type:'primary',method: () => {
-        this.handleAdd()
-      }}
-]
 
 export const searchData = {  //查询表单
   username: "",

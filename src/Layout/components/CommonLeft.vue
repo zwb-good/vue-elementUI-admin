@@ -8,7 +8,7 @@
     :default-active="openMenu"
     @select="select"
   >
-    <nav-menu :nav-menus="addRoutes"></nav-menu>
+    <nav-menu :nav-menus="this.addRoutes"></nav-menu>
   </el-menu>
 </template>
 

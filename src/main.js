@@ -24,21 +24,3 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-/* router.beforeEach((to,from,next)=>{
-  if(to.path == '/login' || to.path == '/index' || to.path == '/'){
-    next({path:'/login'});
-  }else{
-    let token = qs.parse(window.sessionStorage.getItem("token"));
-    if(token){
-      store.commit("login",token.menuList);
-      const addRouters = state.tab.routerList;
-      console.log(addRouters)
-      router.addRoutes(addRouters);
-      console.log(888)
-      next();
-    }else{
-      next({path:'/login'});
-    }
-  }
-}) */
-

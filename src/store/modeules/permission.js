@@ -54,6 +54,9 @@ const mutations = {
   },
   SET_BUTTONLIST: (state, buttonList) => {
     state.buttonList = buttonList
+  },
+  SET_ADDROUTES: (state,addRoutes) => {
+    state.addRoutes = addRoutes
   }
 }
 
@@ -64,8 +67,7 @@ const actions = {
         return item.id;
       });
       getMenuListByRoles({roleIds: roleIds.join(",")}).then(response => {
-        const {data} = response;
-        const accessedRoutes = filterAsyncRouter(data.rows)
+        const accessedRoutes = filterAsyncRouter(response.data)
         commit("SET_ROUTES",accessedRoutes);
         resolve(accessedRoutes)
       })
@@ -78,8 +80,7 @@ const actions = {
         return item.id;
       });
       selectButton({roleIds: roleIds.join(","),path:path}).then(response => {
-        const {data} = response;
-        let buttonList = data.rows.map(item => {
+        let buttonList = response.data.map(item => {
           return item.mark;
         });
         commit("SET_OPENMENU",path);
